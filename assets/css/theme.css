@@ -1,0 +1,21 @@
+[data-bs-theme="dark"] {
+    --bs-body-color: #dee2e6;
+    --bs-body-bg: #212529;
+    --bs-border-color: #495057;
+
+    .table {
+        --bs-table-color: var(--bs-body-color);
+        --bs-table-bg: var(--bs-body-bg);
+        --bs-table-border-color: var(--bs-border-color);
+    }
+
+    .card {
+        background-color: #2d3339;
+        border-color: #495057;
+    }
+
+    .navbar,
+    .dropdown-menu {
+        background-color: #343a40 !important;
+    }
+}
