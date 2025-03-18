@@ -1,49 +1,53 @@
 <?php
 include 'includes/config.php';
 
+if (isset($_SESSION['usuario_id'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+
+$error = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    
     try {
+        $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_STRING);
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
+
+        // Validaciones
+        if (empty($nombre) || empty($email) || empty($password)) {
+            throw new Exception('Todos los campos son requeridos');
+        }
+
+        if ($password !== $confirm_password) {
+            throw new Exception('Las contraseñas no coinciden');
+        }
+
+        if (strlen($password) < 8) {
+            throw new Exception('La contraseña debe tener al menos 8 caracteres');
+        }
+
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
         $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)");
-        $stmt->execute([$nombre, $email, $password]);
+        $stmt->execute([$nombre, $email, $hashed_password]);
+
+        $_SESSION['success'] = "Registro exitoso. Por favor inicia sesión.";
         header('Location: login.php');
         exit;
+
     } catch (PDOException $e) {
-        $error = "Error al registrar: " . $e->getMessage();
+        if ($e->errorInfo[1] === 1062) {
+            $error = "El email ya está registrado";
+        } else {
+            $error = "Error en el registro: " . $e->getMessage();
+        }
+        error_log("Error de registro: " . $e->getMessage());
+    } catch (Exception $e) {
+        $error = $e->getMessage();
     }
 }
 ?>
-<?php include 'includes/header.php'; ?>
 
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="card-title text-center mb-4">Registro de Usuario</h3>
-                <?php if (isset($error)): ?>
-                    <div class="alert alert-danger"><?= $error ?></div>
-                <?php endif; ?>
-                <form method="POST">
-                    <div class="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Contraseña</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Registrar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php include 'includes/footer.php'; ?>
+<!-- Resto del formulario de registro... -->
