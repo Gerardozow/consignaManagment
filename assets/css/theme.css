@@ -1,21 +1,29 @@
 [data-bs-theme="dark"] {
-    --bs-body-color: #dee2e6;
-    --bs-body-bg: #212529;
+    --bs-body-bg: #1a1a1a;
+    --bs-body-color: #f8f9fa;
     --bs-border-color: #495057;
-
-    .table {
-        --bs-table-color: var(--bs-body-color);
-        --bs-table-bg: var(--bs-body-bg);
-        --bs-table-border-color: var(--bs-border-color);
-    }
 
     .card {
         background-color: #2d3339;
-        border-color: #495057;
+        border-color: var(--bs-border-color);
     }
 
-    .navbar,
-    .dropdown-menu {
+    .table {
+        --bs-table-bg: var(--bs-body-bg);
+        --bs-table-color: var(--bs-body-color);
+        --bs-table-border-color: var(--bs-border-color);
+    }
+
+    .bg-light {
         background-color: #343a40 !important;
     }
+}
+
+.theme-toggle {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: rotate(25deg);
 }
