@@ -22,6 +22,13 @@ if (!isset($_SESSION['user_id'])) {
                         </a>
                     </li>
                     <li class="nav-item">
+                        <?php if (tiene_permiso('gestion_usuarios')): ?>
+                        <a class="nav-link" href="usuarios/">
+                            <i class="bi bi-people"></i> Usuarios
+                        </a>
+                        <?php endif; ?>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#">
                             Materiales
                         </a>

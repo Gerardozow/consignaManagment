@@ -7,6 +7,12 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">Iniciar Sesión</h3>
                 </div>
+                <!-- Agregar esto después del card-header -->
+                <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger">
+                    Usuario o contraseña incorrectos
+                </div>
+                <?php endif; ?>
                 <div class="card-body">
                     <form action="auth.php" method="POST">
                         <div class="mb-3">
