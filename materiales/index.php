@@ -53,7 +53,6 @@ $materiales = $stmt->fetchAll();
                             <td>
                                 <a href="editar.php?id=<?= $m['id'] ?>" class="btn btn-sm btn-warning">Editar</a>
                                 <a href="proveedores.php?material=<?= $m['id'] ?>" class="btn btn-sm btn-info">Proveedores</a>
-                                <a href="inventario.php?material=<?= $m['id'] ?>" class="btn btn-sm btn-outline-primary">Inventario</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

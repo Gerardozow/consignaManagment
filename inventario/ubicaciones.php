@@ -89,6 +89,8 @@ $total = array_sum(array_column($inventario, 'cantidad'));
             <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="0" required>
             <div class="invalid-feedback">Cantidad válida requerida.</div>
         </div>
+        <input type="text" name="matricula" class="form-control" placeholder="Matrícula" required>
+
         <div class="col-md-3">
             <button class="btn btn-success w-100">Registrar</button>
         </div>
