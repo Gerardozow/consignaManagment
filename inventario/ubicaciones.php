@@ -200,6 +200,7 @@ $matriculas_existentes = $stmt->fetchAll(PDO::FETCH_COLUMN);
             </div>
         </form>
 
+    <hr class="my-4">
     <!-- Tabla de inventario -->
     <div class="table-responsive">
         <table class="table table-bordered align-middle">
