@@ -12,7 +12,7 @@ $base_url = '/consigna'; // cambia esto si cambia el nombre de la carpeta
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" href="dashboard.php">Inventario Consigna</a>
+        <a class="navbar-brand" href="<?= $base_url ?>/dashboard.php">Inventario Consigna</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContenido" aria-controls="navbarContenido" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
