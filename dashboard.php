@@ -1,5 +1,13 @@
 <?php
 require 'includes/auth.php';
+require 'includes/db.php';
+require 'includes/permisos.php';
+
+if (!tienePermiso($pdo, $_SESSION['user_id'], 'ver_dashboard')) {
+    echo "<div class='alert alert-danger'>No tienes permiso para ver el dashboard.</div>";
+    exit;
+}
+
 include 'includes/header.php';
 ?>
 
