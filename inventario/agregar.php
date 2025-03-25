@@ -13,22 +13,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ubicacion = trim($_POST['ubicacion']);
     $proveedor = trim($_POST['proveedor']);
 
-    // Validación simple
     if (!$codigo || !$descripcion) {
-        $mensaje = "<div class='alert alert-danger'>Código y descripción son obligatorios.</div>";
+        $_SESSION['mensaje'] = [
+            'icono' => 'error',
+            'titulo' => 'Faltan datos',
+            'texto' => 'Código y descripción son obligatorios.'
+        ];
     } else {
         // Verificar si ya existe el código
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM materiales WHERE codigo = ?");
         $stmt->execute([$codigo]);
         if ($stmt->fetchColumn() > 0) {
-            $mensaje = "<div class='alert alert-warning'>El código ya existe en el sistema.</div>";
+            $_SESSION['mensaje'] = [
+                'icono' => 'warning',
+                'titulo' => 'Código duplicado',
+                'texto' => 'Este código ya existe en el sistema.'
+            ];
         } else {
             // Insertar
             $stmt = $pdo->prepare("INSERT INTO materiales (codigo, descripcion, cantidad, unidad, ubicacion, proveedor)
                                    VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$codigo, $descripcion, $cantidad, $unidad, $ubicacion, $proveedor]);
 
-            header("Location: index.php?agregado=1");
+            $_SESSION['mensaje'] = [
+                'icono' => 'success',
+                'titulo' => 'Material agregado',
+                'texto' => 'El material se registró correctamente.'
+            ];
+
+            header("Location: index.php");
             exit;
         }
     }
@@ -37,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container mt-4">
     <h2>Agregar Nuevo Material</h2>
-    <?php if ($mensaje) echo $mensaje; ?>
 
     <form method="POST" class="row g-3">
         <div class="col-md-4">
@@ -54,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="col-md-3">
             <label>Unidad</label>
-            <input type="text" name="unidad" class="form-control" value="Sheet">
+            <input type="text" name="unidad" class="form-control" value="pz">
         </div>
         <div class="col-md-3">
             <label>Ubicación</label>

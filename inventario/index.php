@@ -40,17 +40,6 @@ $ubicaciones = $pdo->query("SELECT DISTINCT ubicacion FROM materiales WHERE ubic
 ?>
 
 <div class="container mt-4">
-    <?php if (isset($_GET['agregado'])): ?>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: '¡Material agregado!',
-                text: 'El material fue registrado correctamente.',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        </script>
-    <?php endif; ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Inventario</h2>
         <a href="agregar.php" class="btn btn-primary">Agregar Material</a>
