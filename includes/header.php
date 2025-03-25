@@ -7,7 +7,7 @@ $base_url = '/consigna'; // cambia esto si cambia el nombre de la carpeta
     <meta charset="UTF-8">
     <title>Inventario Consigna</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="<?= $base_url ?>/assets/css/style.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
@@ -36,9 +36,9 @@ $base_url = '/consigna'; // cambia esto si cambia el nombre de la carpeta
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="menuInventario">
                         <li><a class="dropdown-item" href="<?= $base_url ?>/inventario/index.php">Ver Inventario</a></li>
-                        <li><a class="dropdown-item" href="../inventario/agregar.php">Agregar Material</a></li>
-                        <li><a class="dropdown-item" href="../inventario/movimientos.php">Movimientos</a></li>
-                        <li><a class="dropdown-item" href="../inventario/conteo.php">Conteo</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>/inventario/agregar.php">Agregar Material</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>/inventario/movimientos.php">Movimientos</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>/inventario/conteo.php">Conteo</a></li>
                     </ul>
                 </li>
 
@@ -59,7 +59,7 @@ $base_url = '/consigna'; // cambia esto si cambia el nombre de la carpeta
                         Administración
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="menuAdmin">
-                        <li><a class="dropdown-item" href="crear_usuario.php">Crear Usuario</a></li>
+                        <li><a class="dropdown-item" href="<?= $base_url ?>/crear_usuario.php">Crear Usuario</a></li>
                         <li><a class="dropdown-item" href="#">Permisos</a></li>
                         <li><a class="dropdown-item" href="#">Configuración</a></li>
                     </ul>
