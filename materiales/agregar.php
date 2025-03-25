@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="col-md-2">
             <label class="form-label">Unidad</label>
-            <input type="text" name="unidad" class="form-control" value="pz">
+            <input type="text" name="unidad" class="form-control" value="Sheet">
         </div>
         <div class="col-12 text-end">
             <a href="index.php" class="btn btn-secondary">Cancelar</a>
