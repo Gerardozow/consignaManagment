@@ -38,11 +38,19 @@ $proveedores = $pdo->query("SELECT DISTINCT proveedor FROM materiales WHERE prov
 $ubicaciones = $pdo->query("SELECT DISTINCT ubicacion FROM materiales WHERE ubicacion IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN);
 
 ?>
-<?php if (isset($_GET['agregado'])): ?>
-    <div class="alert alert-success mt-3">Material agregado correctamente.</div>
-<?php endif; ?>
 
 <div class="container mt-4">
+    <?php if (isset($_GET['agregado'])): ?>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Material agregado!',
+                text: 'El material fue registrado correctamente.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    <?php endif; ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Inventario</h2>
         <a href="agregar.php" class="btn btn-primary">Agregar Material</a>

@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="col-md-3">
             <label>Unidad</label>
-            <input type="text" name="unidad" class="form-control" value="pz">
+            <input type="text" name="unidad" class="form-control" value="Sheet">
         </div>
         <div class="col-md-3">
             <label>Ubicación</label>
