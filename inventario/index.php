@@ -36,7 +36,11 @@ $materiales = $stmt->fetchAll();
 // Obtener listas únicas para filtros
 $proveedores = $pdo->query("SELECT DISTINCT proveedor FROM materiales WHERE proveedor IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN);
 $ubicaciones = $pdo->query("SELECT DISTINCT ubicacion FROM materiales WHERE ubicacion IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN);
+
 ?>
+<?php if (isset($_GET['agregado'])): ?>
+    <div class="alert alert-success mt-3">Material agregado correctamente.</div>
+<?php endif; ?>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
