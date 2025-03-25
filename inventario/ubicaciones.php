@@ -130,6 +130,15 @@ $inventario = $stmt->fetchAll();
 
 // Calcular total general
 $total = array_sum(array_column($inventario, 'cantidad'));
+
+// Listado único de ubicaciones y matrículas existentes para el material
+$stmt = $pdo->prepare("SELECT DISTINCT ubicacion FROM inventario_material WHERE material_id = ?");
+$stmt->execute([$material_id]);
+$ubicaciones_existentes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+$stmt = $pdo->prepare("SELECT DISTINCT matricula FROM inventario_material WHERE material_id = ?");
+$stmt->execute([$material_id]);
+$matriculas_existentes = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <div class="container mt-4">
@@ -162,7 +171,12 @@ $total = array_sum(array_column($inventario, 'cantidad'));
 
             <div class="col-md-3">
                 <label>Ubicación Origen</label>
-                <input type="text" name="origen" class="form-control" required>
+                <select name="origen" class="form-select" required>
+                    <option value="">Seleccionar origen</option>
+                    <?php foreach ($ubicaciones_existentes as $ubi): ?>
+                        <option value="<?= htmlspecialchars($ubi) ?>"><?= htmlspecialchars($ubi) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="col-md-3">
                 <label>Ubicación Destino</label>
@@ -170,7 +184,12 @@ $total = array_sum(array_column($inventario, 'cantidad'));
             </div>
             <div class="col-md-3">
                 <label>Matrícula</label>
-                <input type="text" name="matricula" class="form-control" required>
+                <select name="matricula" class="form-select" required>
+                    <option value="">Seleccionar matrícula</option>
+                    <?php foreach ($matriculas_existentes as $mat): ?>
+                        <option value="<?= htmlspecialchars($mat) ?>"><?= htmlspecialchars($mat) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="col-md-2">
                 <label>Cantidad</label>
