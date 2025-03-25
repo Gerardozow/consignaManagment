@@ -29,33 +29,34 @@ if (!$material) {
     exit;
 }
 
-// Registrar o actualizar inventario por ubicación
+// Registrar o actualizar inventario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ubicacion = trim($_POST['ubicacion']);
+    $matricula = strtoupper(trim($_POST['matricula']));
     $cantidad = (int) $_POST['cantidad'];
 
-    if (!$ubicacion || $cantidad < 0) {
+    if (!$ubicacion || !$matricula || $cantidad < 0) {
         $_SESSION['mensaje'] = [
             'icono' => 'error',
             'titulo' => 'Datos inválidos',
-            'texto' => 'Debes ingresar una ubicación y una cantidad válida.'
+            'texto' => 'Todos los campos son obligatorios y la cantidad debe ser válida.'
         ];
     } else {
-        // Verificar si ya existe inventario en esa ubicación
-        $stmt = $pdo->prepare("SELECT id FROM inventario_material WHERE material_id = ? AND ubicacion = ?");
-        $stmt->execute([$material_id, $ubicacion]);
+        // Verificar si ya existe ese registro exacto
+        $stmt = $pdo->prepare("SELECT id FROM inventario_material WHERE material_id = ? AND ubicacion = ? AND matricula = ?");
+        $stmt->execute([$material_id, $ubicacion, $matricula]);
         $registro = $stmt->fetch();
 
         if ($registro) {
-            // Actualizar cantidad (suma)
+            // Actualizar cantidad
             $stmt = $pdo->prepare("UPDATE inventario_material SET cantidad = cantidad + ? WHERE id = ?");
             $stmt->execute([$cantidad, $registro['id']]);
             $mensaje = "Cantidad actualizada.";
         } else {
-            // Crear nuevo registro
-            $stmt = $pdo->prepare("INSERT INTO inventario_material (material_id, ubicacion, cantidad) VALUES (?, ?, ?)");
-            $stmt->execute([$material_id, $ubicacion, $cantidad]);
-            $mensaje = "Ubicación registrada.";
+            // Insertar nuevo registro
+            $stmt = $pdo->prepare("INSERT INTO inventario_material (material_id, ubicacion, matricula, cantidad) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$material_id, $ubicacion, $matricula, $cantidad]);
+            $mensaje = "Registro agregado.";
         }
 
         $_SESSION['mensaje'] = [
@@ -68,40 +69,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Obtener inventario actual
-$stmt = $pdo->prepare("SELECT * FROM inventario_material WHERE material_id = ?");
+// Obtener inventario actual por matrícula y ubicación
+$stmt = $pdo->prepare("SELECT * FROM inventario_material WHERE material_id = ? ORDER BY ubicacion, matricula");
 $stmt->execute([$material_id]);
 $inventario = $stmt->fetchAll();
 
+// Calcular total general
 $total = array_sum(array_column($inventario, 'cantidad'));
 ?>
 
 <div class="container mt-4">
-    <h2>Inventario por ubicación: <span class="text-primary"><?= htmlspecialchars($material['descripcion']) ?></span></h2>
+    <h2>Inventario por Matrícula: <span class="text-primary"><?= htmlspecialchars($material['descripcion']) ?></span></h2>
 
     <!-- Formulario de registro -->
     <form method="POST" class="row g-3 mb-4 needs-validation" novalidate>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <input type="text" name="ubicacion" class="form-control" placeholder="Ubicación" required>
-            <div class="invalid-feedback">Campo requerido.</div>
+            <div class="invalid-feedback">Ubicación requerida.</div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <input type="text" name="matricula" class="form-control" placeholder="Matrícula" required>
+            <div class="invalid-feedback">Matrícula requerida.</div>
+        </div>
+        <div class="col-md-2">
             <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="0" required>
             <div class="invalid-feedback">Cantidad válida requerida.</div>
         </div>
-        <input type="text" name="matricula" class="form-control" placeholder="Matrícula" required>
-
-        <div class="col-md-3">
+        <div class="col-md-2">
             <button class="btn btn-success w-100">Registrar</button>
         </div>
     </form>
 
-    <!-- Tabla de ubicaciones -->
+    <!-- Tabla de inventario -->
     <div class="table-responsive">
         <table class="table table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>Ubicación</th>
+                    <th>Matrícula</th>
                     <th>Cantidad</th>
                 </tr>
             </thead>
@@ -109,14 +114,15 @@ $total = array_sum(array_column($inventario, 'cantidad'));
                 <?php foreach ($inventario as $item): ?>
                     <tr>
                         <td><?= htmlspecialchars($item['ubicacion']) ?></td>
+                        <td><?= htmlspecialchars($item['matricula']) ?></td>
                         <td><?= $item['cantidad'] ?></td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if (empty($inventario)): ?>
-                    <tr><td colspan="2" class="text-center">Sin inventario registrado.</td></tr>
+                    <tr><td colspan="3" class="text-center">Sin inventario registrado.</td></tr>
                 <?php else: ?>
                     <tr class="table-light fw-bold">
-                        <td>Total</td>
+                        <td colspan="2">Total</td>
                         <td><?= $total ?></td>
                     </tr>
                 <?php endif; ?>
@@ -125,7 +131,7 @@ $total = array_sum(array_column($inventario, 'cantidad'));
     </div>
 </div>
 
-<!-- Validación con Bootstrap -->
+<!-- Validación JS -->
 <script>
 (() => {
     'use strict';
