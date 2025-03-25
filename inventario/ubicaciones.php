@@ -68,6 +68,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+// Manejar movimiento de material
+if (isset($_POST['accion']) && $_POST['accion'] === 'mover') {
+    $ubicacion_origen = trim($_POST['origen']);
+    $ubicacion_destino = trim($_POST['destino']);
+    $matricula = strtoupper(trim($_POST['matricula']));
+    $cantidad = (int) $_POST['cantidad_mover'];
+
+    if (!$ubicacion_origen || !$ubicacion_destino || !$matricula || $cantidad <= 0) {
+        $_SESSION['mensaje'] = [
+            'icono' => 'error',
+            'titulo' => 'Datos incompletos',
+            'texto' => 'Todos los campos del movimiento son obligatorios.'
+        ];
+    } else {
+        // Verificar existencia en origen
+        $stmt = $pdo->prepare("SELECT id, cantidad FROM inventario_material WHERE material_id = ? AND ubicacion = ? AND matricula = ?");
+        $stmt->execute([$material_id, $ubicacion_origen, $matricula]);
+        $origen = $stmt->fetch();
+
+        if (!$origen || $origen['cantidad'] < $cantidad) {
+            $_SESSION['mensaje'] = [
+                'icono' => 'warning',
+                'titulo' => 'Stock insuficiente',
+                'texto' => 'No hay suficiente inventario en la ubicación de origen.'
+            ];
+        } else {
+            // Descontar de origen
+            $stmt = $pdo->prepare("UPDATE inventario_material SET cantidad = cantidad - ? WHERE id = ?");
+            $stmt->execute([$cantidad, $origen['id']]);
+
+            // Sumar en destino (crear o actualizar)
+            $stmt = $pdo->prepare("SELECT id FROM inventario_material WHERE material_id = ? AND ubicacion = ? AND matricula = ?");
+            $stmt->execute([$material_id, $ubicacion_destino, $matricula]);
+            $destino = $stmt->fetch();
+
+            if ($destino) {
+                $stmt = $pdo->prepare("UPDATE inventario_material SET cantidad = cantidad + ? WHERE id = ?");
+                $stmt->execute([$cantidad, $destino['id']]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO inventario_material (material_id, ubicacion, matricula, cantidad) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$material_id, $ubicacion_destino, $matricula, $cantidad]);
+            }
+
+            $_SESSION['mensaje'] = [
+                'icono' => 'success',
+                'titulo' => 'Movimiento realizado',
+                'texto' => "Se movieron $cantidad unidades de '$ubicacion_origen' a '$ubicacion_destino'."
+            ];
+        }
+
+        header("Location: ubicaciones.php?material=$material_id");
+        exit;
+    }
+}
 
 // Obtener inventario actual por matrícula y ubicación
 $stmt = $pdo->prepare("SELECT * FROM inventario_material WHERE material_id = ? ORDER BY ubicacion, matricula");
@@ -99,6 +153,33 @@ $total = array_sum(array_column($inventario, 'cantidad'));
             <button class="btn btn-success w-100">Registrar</button>
         </div>
     </form>
+
+    <hr class="my-4">
+        <h4>Mover Material entre Ubicaciones</h4>
+
+        <form method="POST" class="row g-3 needs-validation" novalidate>
+            <input type="hidden" name="accion" value="mover">
+
+            <div class="col-md-3">
+                <label>Ubicación Origen</label>
+                <input type="text" name="origen" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Ubicación Destino</label>
+                <input type="text" name="destino" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Matrícula</label>
+                <input type="text" name="matricula" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <label>Cantidad</label>
+                <input type="number" name="cantidad_mover" class="form-control" min="1" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button class="btn btn-primary w-100">Mover</button>
+            </div>
+        </form>
 
     <!-- Tabla de inventario -->
     <div class="table-responsive">
