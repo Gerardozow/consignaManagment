@@ -22,9 +22,10 @@
                         Inventario
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="menuInventario">
-                        <li><a class="dropdown-item" href="#">Ver Inventario</a></li>
-                        <li><a class="dropdown-item" href="#">Agregar Material</a></li>
-                        <li><a class="dropdown-item" href="#">Conteos</a></li>
+                        <li><a class="dropdown-item" href="/inventario/index.php">Ver Inventario</a></li>
+                        <li><a class="dropdown-item" href="/inventario/agregar.php">Agregar Material</a></li>
+                        <li><a class="dropdown-item" href="/inventario/movimientos.php">Movimientos</a></li>
+                        <li><a class="dropdown-item" href="/inventario/conteo.php">Conteo</a></li>
                     </ul>
                 </li>
 
